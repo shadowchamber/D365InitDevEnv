@@ -27,14 +27,13 @@ Set-WinUserLanguageList -LanguageList $Locale -Force
 # Install chocolatey
 if (($InstallSoftware -eq $true) -or ($CloneRepos -eq $true))
 {
-	Set-ExecutionPolicy Bypass -Scope Process -Force; iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+	Set-ExecutionPolicy Bypass -Scope Process -Force; Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 
 if ($InstallSoftware -eq $true)
 {
 	# Install Google Chrome and Edge
 	Install-ChocoPackage -PackageName googlechrome
-	Install-ChocoPackage -PackageName microsoft-edge
 
 	# Install Notepad++
 	Install-ChocoPackage -PackageName notepadplusplus
@@ -55,7 +54,7 @@ if ($InstallSoftware -eq $true)
 	Install-ChocoPackage -PackageName ServiceBusExplorer
 
 	# Create desktop shortcut to ServiceBusExplorer
-    Create-Shortcut -ShortcutPath "$Home\Desktop\Service Bus Explorer.lnk" "$env:ChocolateyInstall\lib\ServiceBusExplorer\tools\ServiceBusExplorer.exe"	
+    Add-Shortcut -ShortcutPath "$Home\Desktop\Service Bus Explorer.lnk" "$env:ChocolateyInstall\lib\ServiceBusExplorer\tools\ServiceBusExplorer.exe"	
 
     # Install git for Windows
 	Install-ChocoPackage -PackageName git.install
@@ -63,12 +62,28 @@ if ($InstallSoftware -eq $true)
 	# Install git Extensions
 	Install-ChocoPackage -PackageName gitextensions
 
-	# Install git Fork
-	Install-ChocoPackage -PackageName git-fork
-
     # Install tortoisegit
     Install-ChocoPackage -PackageName tortoisegit
 
     # Install github desktop
     Install-ChocoPackage -PackageName github-desktop
+
+	# Install double commander
+    Install-ChocoPackage -PackageName doublecmd
+	
+	# Install jmeter
+    Install-ChocoPackage -PackageName jmeter
+
+	Install-ChocoPackage -PackageName marktext
 }
+
+Install-Module -Name d365fo.tools
+
+# Pin folders to quick access
+Add-QuickAccessFolders -FolderList "$ServiceDrive\AOSService\PackagesLocalDirectory,$RepoDir,$SystemDrive\Temp"
+
+# Copy scripts into local PowerShell module folder and set them up to be imported automatically
+$PSModulesPath = Join-Path -Path $PSScriptRoot -ChildPath "PSModules"
+$PSProfilePath = Join-Path -Path $PSScriptRoot -ChildPath "profile.ps1"
+Copy-PSModules -ModulesPath $PSModulesPath
+Copy-PSProfile -SourcePath $PSProfilePath
