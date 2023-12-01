@@ -75,6 +75,8 @@ if ($InstallSoftware -eq $true)
     Install-ChocoPackage -PackageName jmeter
 
 	Install-ChocoPackage -PackageName marktext
+
+	Install-ChocoPackage -PackageName dotpeek
 }
 
 Install-Module -Name d365fo.tools
@@ -87,3 +89,6 @@ $PSModulesPath = Join-Path -Path $PSScriptRoot -ChildPath "PSModules"
 $PSProfilePath = Join-Path -Path $PSScriptRoot -ChildPath "profile.ps1"
 Copy-PSModules -ModulesPath $PSModulesPath
 Copy-PSProfile -SourcePath $PSProfilePath
+
+Install-SSD365
+Install-TRUDUtils
